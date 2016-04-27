@@ -151,38 +151,38 @@ ud = u(4);
 % ==========================
 if section == 1 % 第一阶段之前进行占空比等计算   
     % 扇区判断
-    k = ux / uy;
-    angle = atand(1/k);
-    if (ux <= 0 && uy > 0 && k > -sqrt(3) && k <= 0)
+    k = uy / ux;
+    angle = atand(k);
+    if (ux > 0 && uy >= 0 && k < sqrt(3) && k >= 0)
         sector = 1;
-        angle = angle + 180;
-    elseif (ux < 0 && (k > sqrt(3) || k <= -sqrt(3)))
+    elseif (uy > 0 && (k >= sqrt(3) || k < -sqrt(3)))
         sector = 2;
-        angle = angle + 180;
-    elseif (ux < 0 && uy < 0 && k <= sqrt(3) && k >0)
+        if angle < 0
+            angle = angle + 180;
+        end
+    elseif (ux < 0 && uy > 0 && k >= -sqrt(3) && k < 0)
         sector = 3;
         angle = angle + 180;
-    elseif (ux >= 0 && uy < 0 && k <= 0 && k > -sqrt(3))
+    elseif (ux < 0 && uy <= 0 && k >= 0 && k < sqrt(3))
         sector = 4;
-        angle = angle + 360;
-    elseif (ux > 0 && (k > sqrt(3) || k <= -sqrt(3)))
+        angle = angle + 180;
+    elseif (uy < 0 && (k >= sqrt(3) || k < -sqrt(3)))
         sector = 5;
         if (angle < 0)
             angle = angle + 360;
+        else
+            angle = angle + 180;
         end
-    elseif (ux > 0 && uy > 0 && k > 0 && k <= sqrt(3))
+    elseif (ux > 0 && uy < 0 && k < 0 && k >= -sqrt(3))
         sector = 6;
+        angle = angle + 360;
     else
         sector = 1;
         angle = abs(angle);
     end
     
     % calculate intersection angle
-    if (angle < 30)
-        theta = angle + 30;
-    else
-        theta = mod(angle-30, 60);
-    end
+    theta = mod(angle, 60);
     
     Dm = 2/sqrt(3) * sqrt(ux^2 + uy^2)/ud * sind(60 - theta); % 计算占空比
     Dn = 2/sqrt(3) * sqrt(ux^2 + uy^2)/ud * sind(theta);
